@@ -1,5 +1,6 @@
 import openFile
 import Ana_Fila
+import reportes
 
 contenido = ""
 
@@ -23,12 +24,10 @@ def menuBasilink():
             if opcMenu == 1:
                 archivo = input('Nombre/direccion del archivo: ')
                 contenido = openFile.getContenido(archivo)
-                
             elif opcMenu == 2:
-                #for cont_linea in range(len(contenido)):
-                    #Ana_Fila.analisis_linea(contenido[cont_linea],cont_linea+1)
                 Ana_Fila.analisis_linea(contenido)
-
+                print("paso por aqui 1")
+                reportes.reportTokens()
             elif opcMenu == 3:
                 print('opcion 3 man')
                 

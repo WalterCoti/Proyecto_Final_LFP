@@ -23,3 +23,11 @@ class obToken():
 
     def getDescript(self):
         return self.descript
+        
+    def getToken(self):
+        return self.ntoken
+    
+    def getLexema(self):
+        return self.valor
+    
+    
