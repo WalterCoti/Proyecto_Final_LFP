@@ -2,6 +2,7 @@
 
 Gramática:
 SENT -> declar SENT
+
 		| s_if SENT
 		| s_while SENT
 		| s_for SENT
@@ -9,6 +10,7 @@ SENT -> declar SENT
 		| call_func SENT
 		| E
 	
+
 declar -> tipo_var tk_iden tk_= tipo_decla
 
 s_if ->  tk_if tk_( tip_valor tk_) tk_{ SENT tk_}
@@ -30,11 +32,13 @@ op_bre -> tk_break tk_:
 call_func -> tk_iden tk_( tip_valor tk_) tk_;
 
 tipo_var ->  tk_var
+
 		| tk_let
 		| tk_const
 		| tip_valor
 		
 VALOR -> tk_" tk_txt tk_"
+
 		| tk_true
 		| tk_false
 		| tk_num
@@ -43,5 +47,6 @@ VALOR -> tk_" tk_txt tk_"
 tip_valor -> VALOR M_Valor
 
 M_Valor ->  tk_, tip_valor
+
 		| tk_;
 		| E
