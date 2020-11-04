@@ -10,7 +10,6 @@ def analisis_linea(contenido):
     numFila = 1
     numCol = 0
     lencontrr = len(contenido)
-
     for pos in range(len(contenido)):
         carcActual = contenido[pos]
         if contenido[pos] =="\n":
@@ -25,7 +24,6 @@ def analisis_linea(contenido):
                     texto = texto + contenido[pos]
                 else:
                     if contenido[pos] in tokens.lstTokens:
-                       # estado = 2   #----ir a estado en identificador entre parentesis
                         if texto:
                             if contenido[pos] == "(":
                                 
@@ -87,7 +85,6 @@ def analisis_linea(contenido):
             elif estado == 2:#----------------------------------------------------------------
                 if contenido[pos].isdigit() or contenido[pos].isalpha():
                     texto = texto + contenido[pos] 
-# 
                 elif contenido[pos]== "_":
                     texto = texto + contenido[pos] 
                 else:
@@ -116,8 +113,6 @@ def analisis_linea(contenido):
                             continue
                         else:
                             addErrores(numFila,numCol,contenido[pos])
-
-
             elif estado == 3:#------------------------------------------------------------------------
                 if contenido[pos] in tokens.lstTokens:
                     if contenido[pos] == "\"":
@@ -130,7 +125,7 @@ def analisis_linea(contenido):
                             elif texto.isnumeric():
                                 addToken(numFila,numCol-len(texto), "numero",texto)   
                             else:
-                                addToken(numFila,numCol-len(texto), "texto",texto)      
+                                addToken(numFila,numCol-len(texto), "identificador",texto)      
                             texto =""
                         addToken(numFila,numCol,contenido[pos],contenido[pos])
                     elif contenido[pos] == "(":
@@ -162,6 +157,14 @@ def analisis_linea(contenido):
                         estado=0
                 elif contenido[pos].isalpha() or contenido[pos].isdigit():
                         texto = texto + contenido[pos]
+                elif contenido[pos].isspace():
+                    if texto.lower() == "in":
+                        addToken(numFila,numCol-len(texto),"in","in")
+                        texto =""
+                    else:
+                        addToken(numFila,numCol-len(texto), "identificador",texto)      
+                        texto =""
+                        
                 elif contenido[pos] == "_":
                     texto = texto + contenido[pos]
                 else:
@@ -219,19 +222,16 @@ def analisis_linea(contenido):
                         continue
                     else:
                         addErrores(numFila,numCol,contenido[pos])
-            elif estado == 6:
+            elif estado == 6:#--------------------------------  comentarios-----------------------
                 if contenido[pos]=="*" and contenido[pos+1]=="/":
                     if texto:
-                        addToken(numFila,numCol- len(texto),"texto",texto)
+                        addToken(numFila,numCol- len(texto),"comentario",texto)
                     addToken(numFila,numCol, "*/","*/")
                     texto = ""
                     estado = 0
                 else:
                     texto = texto + contenido[pos]
          
-
-
-
 def addToken(fila, columna, preserv, valor):
     ntoken = obj_Token.obToken(tokens.lstTokens.get(preserv),valor)
     ntoken.setColum(columna)

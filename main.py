@@ -1,6 +1,7 @@
 import openFile
 import Ana_Fila
 import reportes
+#import AutomataPila
 
 contenido = ""
 
@@ -26,14 +27,12 @@ def menuBasilink():
                 contenido = openFile.getContenido(archivo)
             elif opcMenu == 2:
                 Ana_Fila.analisis_linea(contenido)
-                print("paso por aqui 1")
                 reportes.reportTokens()
             elif opcMenu == 3:
-                print('opcion 3 man')
-                
+                #AutomataPila.iniciarAP()
+                pass
             elif opcMenu == 4:
                 print('opcion 4 man')
-                
             elif opcMenu == 5:
                 salir = True
             else:
