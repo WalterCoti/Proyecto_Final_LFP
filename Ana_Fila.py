@@ -25,7 +25,7 @@ def analisis_linea(contenido):
                 else:
                     if contenido[pos] in tokens.lstTokens:
                         if texto:
-                            if contenido[pos] == "(":
+                            if contenido[pos] == "(" :
                                 
                                 if texto.lower() in tokens.lstTokens:
                                     addToken(numFila,numCol-len(texto), texto,texto)    
@@ -35,7 +35,14 @@ def analisis_linea(contenido):
                                     addToken(numFila,numCol-len(texto),"identificador",texto)
                                     texto=""
                                     estado=3
-
+                            elif  contenido[pos] == ";" or contenido[pos] == ":":
+                                if texto.lower() in tokens.lstTokens:
+                                    addToken(numFila,numCol-len(texto), texto,texto)    
+                                    texto=""
+                                else:
+                                    addToken(numFila,numCol-len(texto),"identificador",texto)
+                                    texto=""
+ 
                         if contenido[pos]=="=" and contenido[pos+1]==">":
                             addToken(numFila,numCol, "=>","=>")
                         else:
@@ -50,7 +57,7 @@ def analisis_linea(contenido):
                             if texto.lower() in tokens.lstTokens:
                                 addToken(numFila,numCol-len(texto), texto,texto)    
                                 texto=""
-                                estado = 1
+                                estado = 2
                             else:
                                 addToken(numFila,numCol-len(texto),"identificador",texto)
                                 texto=""
@@ -98,6 +105,7 @@ def analisis_linea(contenido):
                                 addToken(numFila,numCol-len(texto), "identificador",texto)
                         else:
                             estado = 3
+
                         if contenido[pos] == ":" or contenido[pos] == ";":
                             estado = 0
                         if contenido[pos] == ")":
@@ -162,8 +170,11 @@ def analisis_linea(contenido):
                         addToken(numFila,numCol-len(texto),"in","in")
                         texto =""
                     else:
-                        addToken(numFila,numCol-len(texto), "identificador",texto)      
-                        texto =""
+                        if texto=="":
+                            continue
+                        else:
+                            addToken(numFila,numCol-len(texto), "identificador",texto)      
+                            texto =""
                         
                 elif contenido[pos] == "_":
                     texto = texto + contenido[pos]
@@ -211,8 +222,8 @@ def analisis_linea(contenido):
 
                         addToken(numFila,numCol,")",")")
                         texto = ""
-                    elif contenido[pos] == ";":
-                        addToken(numFila,numCol,";",";")
+                    elif contenido[pos] == ";" or contenido[pos] == ":":
+                        addToken(numFila,numCol,contenido[pos],contenido[pos])
                         estado = 0
                     elif contenido[pos] == "\"":
                         addToken(numFila,numCol,contenido[pos],contenido[pos])

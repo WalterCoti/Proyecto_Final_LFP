@@ -1,13 +1,14 @@
 import openFile
 import Ana_Fila
 import reportes
-#import AutomataPila
+import AutomataPila
+import varGlobal
 
 contenido = ""
 
 def menuBasilink():
     salir = False    
-    while salir == False:
+    while not salir:
         print("**************************************")
         print("*              Bienvenido            *")
         print("**************************************")
@@ -26,13 +27,27 @@ def menuBasilink():
                 archivo = input('Nombre/direccion del archivo: ')
                 contenido = openFile.getContenido(archivo)
             elif opcMenu == 2:
-                Ana_Fila.analisis_linea(contenido)
-                reportes.reportTokens()
+                if len(contenido) == None:
+                    archivo = input('Nombre/direccion del archivo: ')
+                    contenido = openFile.getContenido(archivo)
+                    Ana_Fila.analisis_linea(contenido)
+                    reportes.reportTokens()
+                    reportes.ReportError()
+                else:
+                    Ana_Fila.analisis_linea(contenido)
+                    reportes.reportTokens()
+                    reportes.ReportError()
             elif opcMenu == 3:
-                #AutomataPila.iniciarAP()
-                pass
+                if len(varGlobal.lst_Token_encontrados) == 0:
+                    archivo = input('Nombre/direccion del archivo: ')
+                    contenido = openFile.getContenido(archivo)
+                    Ana_Fila.analisis_linea(contenido)
+                    AutomataPila.iniciarAP()
+                else:
+                    AutomataPila.iniciarAP()
+               
             elif opcMenu == 4:
-                print('opcion 4 man')
+                print('opcion 4')
             elif opcMenu == 5:
                 salir = True
             else:

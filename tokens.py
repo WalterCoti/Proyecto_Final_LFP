@@ -44,7 +44,7 @@ desc_Tokens = {'/*':'apertura de comentario en bloque',
             '"':'Se utiliza para delimitar texto',
             'if':'operador if, valua un booleano para seguir con la ejecucion',
             '(':'inicia un conjunto de valores',
-            ')':'finaliza el conjunto de volores',
+            ')':'finaliza el conjunto de valores',
             '{':'inicia la agrupacion de codigo a ejecutarse',
             '}':'finaliza la agrupacion de codigo a ejecutarse',
             'while':'ciclo que necesita de una validacion',
@@ -88,6 +88,3 @@ Terminales = ['tk_iCom',
             'tk_,',
             'tk_=>',
             'tk_in']
-
-
-#print(listaoficial)

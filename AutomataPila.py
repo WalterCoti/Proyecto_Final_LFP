@@ -2,40 +2,43 @@ import tokens
 import varGlobal
 import transisiones
 from colorama import Fore, Back, Style
-#prueba=[]
 
-#prueba = ['tk_let', 'tk_iden', 'tk_=', 'tk_"', 'tk_txt', 'tk_"', 'tk_;']
-prueba=['tk_if','tk_(','tk_iden','tk_)','tk_{','tk_}']
+
 
 def iniciarAP():
     Auto_Pila(dameTokens())
-   # Auto_Pila(prueba)
+
 
 def dameTokens():
     listaTokens=[]
     for obj_token in varGlobal.lst_Token_encontrados:
-        listaTokens.append(obj_token.getToken())
+        if obj_token.getToken()=="tk_iCom" :
+            continue
+        elif obj_token.getToken()=="tk_Com":
+            continue
+        elif  obj_token.getToken() =="tk_fCom" :
+            continue
+        else:
+            listaTokens.append(obj_token.getToken())
     return listaTokens
 
 
 
-#(estado, lo que leo, desapilar, estado, apilar)
+#(estado, lo que leo, desapilar; estado, apilar)
 def Auto_Pila(entrada):
     ent_ana = entrada
-    salir = True
+    salir = False
     estado = "i"
     pilaActual = []
     pila = []
 
-    while salir== True:
+    while not salir:
         pilaActual= pila.copy()
         try:
             if estado == "i":#---------------------------------estado i--------------
                 print(Fore.RED, 'PILA'+ "  |  " +Fore.YELLOW,'CADENA ENTRADA' + "  |  " +Fore.GREEN,'TRANSISION')
-                #print('PILA' + "  |  " +'CADENA ENTRADA'+ "  |  " + 'TRANSISION')
                 pila.append("#")
                 printFormato(pilaActual,entrada,transisiones.tran[0])
-               # print("|"+ pila + "  |  " + entrada[0] + "  |  " + transisiones.tran[0])
                 estado = "p"
 
             elif estado == "p":#---------------------------------estado p--------------
@@ -47,29 +50,34 @@ def Auto_Pila(entrada):
             elif estado == "q":#---------------------------------estado q--------------
 
                 cimaPila = pila[-1]
-                if len(ent_ana)==0:
-                    TuplaTR= dameTuplaNoTerm(cimaPila,"E")
-                    printFormato(pilaActual,entrada,TuplaTR)
-                    
+                if len(entrada)==0:
                     if cimaPila == "#":
                         printFormato(pilaActual,["----"],transisiones.tran[-1])
                         pila.pop()
                         estado = "r"
-
+                    else:
+                        TuplaTR= tuplaconEpsilon(cimaPila,"E")
+                        pila.pop()
+                        printFormato(pilaActual,entrada,TuplaTR)
                 else:
                     tokenAct = entrada[0]
                     if cimaPila in tokenAct:
-                        tplaTerminal = tupla_Terminal(cimaPila)
-                        printFormato(pilaActual,entrada,tplaTerminal)     
+                            tplaTerminal = tupla_Terminal(cimaPila)
+                            printFormato(pilaActual,entrada,tplaTerminal)     
+                            pila.pop()
+                            entrada.pop(0)
+                    
+                    elif tokenAct=="tk_iden" and cimaPila=="SENT":
+                        tran_Apilar=('q','E','SENT','q',['tk_iden','tk_(','tip_valor','tk_)','tk_;','SENT'])
+                        printFormato(pilaActual,entrada,tran_Apilar)
                         pila.pop()
-                        entrada.pop(0)
+                        for tken in reversed(tran_Apilar[4]):
+                            pila.append(tken)
                     else:
                         try:
                             TuplaTRansision = dameTuplaNoTerm(cimaPila,tokenAct)
                             if type(TuplaTRansision) == None:
-                                TuplaTRansisionconE = dameTuplaNoTerm(cimaPila,"E")
-                                pila.pop()
-                                printFormato(pilaActual,entrada,TuplaTRansisionconE)
+                                pass
                             else:
                                 pila.pop()
                                 for tken in reversed(TuplaTRansision[4]):
@@ -77,34 +85,42 @@ def Auto_Pila(entrada):
                                 printFormato(pilaActual,entrada,TuplaTRansision)
                             #print(pilaActual,entrada,TuplaTRansision)
                         except:
-                            print("transicion con Epsilon prro")
+                            TuplaTRansisionconE = tuplaconEpsilon(cimaPila,"E")
+                            if type(TuplaTRansisionconE)==None:
+                                 print(Fore.RED, "Sintaxis Incorrecta de aqui")
+                                 print(Fore.RESET)
+                            else:
+                                pila.pop()
+                                printFormato(pilaActual,entrada,TuplaTRansisionconE)
+                            
 
             elif estado == "r":
                 print(Fore.BLUE,"Sintaxis Correcta")
                 print(Fore.RESET)
-                pass# estado de aceptacion
+                salir == True
+                break
             
         except:
             print(Fore.RED,"Sintaxis Incorrecta")        
             print(Fore.RESET)
             break
-        #x=input()
+        x=input()
 
-
+def tuplaconEpsilon(cimaPila,val_buscar):
+    for tpls in transisiones.tran:
+        if tpls[2]==cimaPila:
+            if tpls[4][0] == val_buscar:    
+                return tpls
 
 def tplaNoTerminal(No_terminal):
     for nterm in transisiones.tran:
         tmplist = nterm[4]
-        if tmplist.__class__== list:
-            if tmplist[0] == No_terminal:
-                return nterm
-        else:
-            if tmplist == No_terminal:
-                return nterm
+        if tmplist[0] == No_terminal:
+            return nterm
 
 def dameTuplaNoTerm(cimaPila, NTBuscar):
     bucle = True
-    NTerm= tplaNoTerminal(NTBuscar)
+    NTerm= tplaNoTerminal(NTBuscar)  
     while bucle == True:                
         if NTerm[2] == cimaPila:
             return NTerm
@@ -116,7 +132,7 @@ def tupla_Terminal(tkDesapilar):
         tmplist = nterm[1]
         if tmplist == tkDesapilar:
             return nterm
-        
+
 def printFormato(Pilaentrada, cadenaentrada, tran_entrada):
     txtPila =""
     txt_ent = ""
@@ -131,7 +147,5 @@ def printFormato(Pilaentrada, cadenaentrada, tran_entrada):
     txt_tran =  "(" + tran_entrada[0] + ", "+tran_entrada[1] + ", "+tran_entrada[2] + "; "+ tran_entrada[3] + ", "+ produc + ")"
     print(Fore.RED, txtPila + Fore.YELLOW,txt_ent + Fore.GREEN,txt_tran)
 
-#print(dameTupla("SENT","tk_let"))
-iniciarAP()
 
 
